@@ -1,0 +1,1289 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>The Case for React.js and ClojureScript</title>
+
+    <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+    <meta name="author" content="Murilo Pereira">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.min.css">
+    <link rel="stylesheet" href="css/theme/simple.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+      if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+      }
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="reveal">
+      <div class="slides">
+        <section data-id="e44f1a82f2b9dbf4579683a24c39f9a8" class="">
+        <h2>The Case for</h2>
+        <h1>React.js and ClojureScript</h1>
+        <p>
+        <br>
+        </p>
+        <p align="center">Murilo Pereira</p>
+        <p align="center">
+        <a href="https://twitter.com/mpereira">@mpereira</a>
+        </p>
+        <p align="center">May 2, 2014<br>
+        </p>
+        </section>
+        <section data-id="c3a7395387083933476c1a4e6ac4813e" class="">
+        <h1>Problem</h1>
+        </section>
+        <section data-background-color="rgba( 200, 50, 30, 0.6 )" data-id="42bc3956a9dd6110352ed01e9c321452" class="">
+        <h1>Building UIs is difficult.<br>
+        </h1>
+        </section>
+        <section data-id="e092c27bcc271643bec578804f32ffdd" class="">
+        <h2 align="center">Modern Web UIs</h2>
+        <p align="left">
+        <br>
+        </p>
+        <div align="center">
+        <ul>
+        <li>
+        <font style="font-size: 32px;">visual representations of data changing over time</font>
+        </li>
+        <li>
+        <font style="font-size: 32px;">respond to asynchronous user events</font>
+        </li>
+        <li>
+        <font style="font-size: 32px;">transition both the underlying data and itself to new states<br>
+        </font>
+        </li>
+        </ul>
+        </div>
+        </section>
+        <section data-id="e88cee679de2acbb2dbb31a70496a711" class="">
+        <h2>"Data changing over time is the root of all evil."</h2>
+        </section>
+        <section data-id="ae2688dadb8f312f0404fa07e8738b0d" class="">
+        <h2 align="center">Incidental Complexity</h2>
+        <p>
+        <br>
+        </p>
+        <div align="center">
+        <ul>
+        <li>JavaScript isn't <a href="http://en.wikipedia.org/wiki/Reactive_programming">reactive</a>
+        </li>
+        <li>DOM is stateful<br>
+        </li>
+        </ul>
+        </div>
+        </section>
+        <section data-id="1313aa1ceabe7df2fe9b7f15b8c7739e" class="">
+        <h2>What if the JavaScript DOM API was reactive?<br>
+        </h2>
+        </section>
+        <section data-id="50de3e65493eb22def41afd830f33cbb" class="">
+        <pre class="stretch"><code data-trim>
+function tweetScore(tweet) {
+  return(tweet.favorites_count + tweet.retweets_count);
+}
+
+function compareTweetsByScore(a, b) {
+  return(tweetScore(b) - tweetScore(a));
+}
+
+function renderApplication(tweets) {
+  return(document.dom.ul(
+    { class: 'tweets' },
+    tweets
+      .sort(compareTweetsByScore)
+      .slice(0, 5)
+      .map(function(tweet) {
+        return(document.dom.li({ class: 'tweet' }, tweet.text);
+      })
+  ));
+}
+
+var tweets = fetchTweets({ username: 'mpereira' }, { limit: 20 });
+document.dom.render(renderApplication(tweets), document.body);
+        </code></pre>
+        <br>
+        </section>
+        <section data-id="2ed2e2ffce8a42c6ecd0edb738af2436" class="">
+        <h2>Possible solution: Data binding<br>
+        </h2>
+        </section>
+        <section data-id="f7cf6a30000cde576ad5042a2c92786a" class="">
+        <h2 align="center">Data Binding</h2>
+        <p align="center">
+        <br>
+        </p>
+        <div align="left">
+        <div align="center">
+        <ul>
+        <li>Observables</li>
+        <li>Computed properties</li>
+        </ul>
+        </div>
+        <p align="center">
+        <br>
+        </p>
+        <p align="center">Backbone, Ember, Meteor, et al.<br>
+        </p>
+        </div>
+        </section>
+        <section data-id="53891e575a4caff5738cf91c0a433c88" class="">
+        <h2>Contemporary data binding is not simple.<br>
+        </h2>
+        </section>
+        <section data-id="2513fb9d520d57e393d9e58519072da6" class="">
+        <h2>Simple</h2>
+        <p>
+        <br>
+        </p>
+        <p>Not to be mistaken for "easy"</p>
+        <p>
+        <br>
+        </p>
+        <p>Easiness = Familiarity (subjective)</p>
+        <p>
+        <br>
+        </p>
+        <p>Simplicity = "Does/is one thing" (objective)<br>
+        </p>
+        </section>
+        <section data-id="4ff2082fc4df4e824161d5c8314f6c49" class="">
+        <h2 align="center">Data Binding</h2>
+        <p align="center">
+        <br>
+        </p>
+        <div align="left">
+        <div align="center">
+        <ul>
+        <li>Application logic entangled with observables</li>
+        <li>Forces us to compose our programs with framework constructs instead of language constructs (functions and data structures)<br>
+        </li>
+        </ul>
+        </div>
+        </div>
+        </section>
+        <section data-id="7dfacd1418ee0eecb5dd7f56fa492509" class="">
+        <h2>"How often are you fighting the framework?"<br>
+        </h2>
+        </section>
+        <section data-id="e4e203af88bcef59e75456c9443b21c1" class="">
+        <h2>Dirty-checking (Angular)</h2>
+        <p>
+        <br>
+        </p>
+        <p>Also susceptible to the problems of data binding.<br>
+        </p>
+        </section>
+        <section data-background-color="rgba( 200, 50, 30, 0.6 )" data-background-size="initial" data-background-image="https://s3.amazonaws.com/media-p.slid.es/uploads/mpereira/images/377518/AngularJS__Developer_Guide__Conceptual_Overview_-_Pentadactyl.png" data-id="b266327c77884cb5ee7a46927d9df4ee" class="">
+        <h2>
+        <br>
+        </h2>
+        <p>
+        <br>
+        </p>
+        <p>
+        <br>
+        </p>
+        <p>
+        <br>
+        </p>
+        <p>
+        <br>
+        </p>
+        <p>
+        <br>
+        </p>
+        <p>
+        <br>
+        </p>
+        <p>
+        <br>
+        </p>
+        <p>
+        <br>
+        </p>
+        <p>
+        <span style="background-color: transparent;">
+        <font color="#000000">
+        <a href="https://docs.angularjs.org/guide/concepts">
+        <br>
+        </a>
+        </font>
+        </span>
+        </p>
+        <p style="position: absolute; width: 417px; height: 47px; z-index: 4; left: 489px; top: 582px;" class="absolute-element" align="right">
+        <span style="background-color: transparent;">
+        <font color="#000000">
+        <a href="http://www.infoq.com/presentations/Are-We-There-Yet-Rich-Hickey">
+        <font style="font-size: 24px;">https://docs.angularjs.org/guide/concepts</font>
+        </a>
+        </font>
+        </span>
+        <br>
+        </p>
+        </section>
+        <section data-background-color="rgba( 200, 50, 30, 0.6 )" data-id="87b083471d09e25555e844d2ca0fbfb5" class="">
+        <h1>Complex<br>
+        </h1>
+        </section>
+        <section data-id="fbb0945d731ea533a05ba6cd8e5236fd" class="">
+        <h2>Even with shortcomings it's still possible to build complex, modern UIs using contemporary MVC frameworks.<br>
+        </h2>
+        </section>
+        <section data-id="0626842efb5bf5164f4f7bad85b39015" class="">
+        <h2>"We can create precisely the same programs we're creating right now with drastically simpler tools."</h2>
+        <p>Rich Hickey<br>
+        </p>
+        </section>
+        <section data-id="d73751f69709b6ae5c7fc8ad1b177efd" class="">
+        <h2>A different solution to the same problem.<br>
+        </h2>
+        </section>
+        <section data-id="03fd5bb03aa5fb60c5d0a2d4da1952bd" class="">
+        <h1>React.js<br>
+        </h1>
+        </section>
+        <section data-id="02e9161793b6f2aa06e941606d701326" class="">
+        <h2>React.js</h2>
+        <p>
+        <br>
+        </p>
+        <ul>
+        <li>Library for creating UIs</li>
+        <li>Renders the DOM and responds to user events</li>
+        <li>Can be thought of as the V in MVC<br>
+        </li>
+        </ul>
+        <br>
+        </section>
+        <section data-id="752e63296672b5255309d3bb309812b1" class="">
+        <h2>Remember our utopic example a few slides back?<br>
+        </h2>
+        </section>
+        <section data-id="a9ec2af34b842e748fbb857504a97df0" class="">
+        <pre class="stretch"><code data-trim>
+function tweetScore(tweet) {
+  return(tweet.favorites_count + tweet.retweets_count);
+}
+
+function compareTweetsByScore(a, b) {
+  return(tweetScore(b) - tweetScore(a));
+}
+
+function renderApplication(tweets) {
+  return(document.dom.ul(
+    { class: 'tweets' },
+    tweets
+      .sort(compareTweetsByScore)
+      .slice(0, 5)
+      .map(function(tweet) {
+        return(document.dom.li({ class: 'tweet' }, tweet.text);
+      })
+  ));
+}
+
+var tweets = fetchTweets({ username: 'mpereira' }, { limit: 20 });
+document.dom.render(renderApplication(tweets), document.body);
+        </code></pre>
+        <br>
+        </section>
+        <section data-id="7b58f7d8417017e8643e66427ac2dcb3" class="">
+        <h2>It's actually valid React.js code<br>
+        </h2>
+        </section>
+        <section data-id="193c8b72a2ddbcb5d6bc70b014bd3859" class="">
+<pre class="stretch"><code data-trim>
+function tweetScore(tweet) {
+  return(tweet.favorites_count + tweet.retweets_count);
+}
+
+function compareTweetsByScore(a, b) {
+  return(tweetScore(b) - tweetScore(a));
+}
+
+function renderApplication(tweets) {
+  return(React.DOM.ul(
+    { className: 'tweets' },
+    tweets
+      .sort(compareTweetsByScore)
+      .slice(0, 5)
+      .map(function(tweet) {
+        return(React.DOM.li({ className: 'tweet' }, tweet.text);
+      })
+  ));
+}
+
+var tweets = fetchTweets({ username: 'mpereira' }, { limit: 20 });
+React.renderComponent(renderApplication(tweets), document.body);
+</code></pre>
+        <br>
+        </section>
+        <section data-id="c70790be90fc9f3ac984aa5936ae345e" class="">
+        <h2>React gives us a minimally leaky abstraction for a reactive JavaScript/DOM environment.<br>
+        </h2>
+        </section>
+        <section data-id="a10444c09066d32b7424449c6f487961" class="">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="143px" height="333px" version="1.1">
+        <defs>
+        </defs>
+        <g transform="translate(0.5,0.5)">
+        <rect x="1" y="1" width="140" height="60" fill="#ffffff" stroke="#000000" pointer-events="none">
+        </rect>
+        <rect x="1" y="131" width="140" height="60" fill="#ffffff" stroke="#000000" pointer-events="none">
+        </rect>
+        <rect x="1" y="271" width="140" height="60" fill="#ffffff" stroke="#000000" pointer-events="none">
+        </rect>
+        <rect x="31" y="11" width="80" height="40" fill="none" stroke="none" pointer-events="none">
+        </rect>
+        <g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="24px">
+        <text x="71" y="41">Data</text>
+        </g>
+        <rect x="31" y="141" width="80" height="40" fill="none" stroke="none" pointer-events="none">
+        </rect>
+        <g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="24px">
+        <text x="71" y="171">Component</text>
+        </g>
+        <rect x="31" y="281" width="80" height="40" fill="none" stroke="none" pointer-events="none">
+        </rect>
+        <g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="24px">
+        <text x="71" y="311">DOM</text>
+        </g>
+        <path d="M 71 61 L 71 125" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 71 130 L 68 123 L 71 125 L 75 123 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 71 191 L 71 265" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 71 270 L 68 263 L 71 265 L 75 263 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        </g>
+        </svg>
+        </section>
+        <section data-id="3e5a569eb35a90e67af8374db5bf524d" class="">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="123px" height="323px" version="1.1">
+        <defs>
+        </defs>
+        <g transform="translate(0.5,0.5)">
+        <rect x="1" y="1" width="120" height="60" fill="#ffffff" stroke="#000000" pointer-events="none">
+        </rect>
+        <rect x="1" y="131" width="120" height="60" fill="#ffffff" stroke="#000000" pointer-events="none">
+        </rect>
+        <rect x="1" y="261" width="120" height="60" fill="#ffffff" stroke="#000000" pointer-events="none">
+        </rect>
+        <rect x="21" y="11" width="80" height="40" fill="none" stroke="none" pointer-events="none">
+        </rect>
+        <g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="24px">
+        <text x="61" y="41">Model</text>
+        </g>
+        <rect x="21" y="141" width="80" height="40" fill="none" stroke="none" pointer-events="none">
+        </rect>
+        <g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="24px">
+        <text x="61" y="171">View</text>
+        </g>
+        <rect x="21" y="271" width="80" height="40" fill="none" stroke="none" pointer-events="none">
+        </rect>
+        <g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="24px">
+        <text x="61" y="301">DOM</text>
+        </g>
+        <path d="M 41 67 L 41 131" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 41 62 L 45 69 L 41 67 L 38 69 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 41 197 L 41 261" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 41 192 L 45 199 L 41 197 L 38 199 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 81 255 L 81 191" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 81 260 L 78 253 L 81 255 L 85 253 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 81 125 L 81 61" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 81 130 L 78 123 L 81 125 L 85 123 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        </g>
+        </svg>
+        </section>
+        <section data-id="1c723d87e89cf6ffb43fc66c63e8eaed" class="">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="443px" height="323px" version="1.1">
+        <defs>
+        </defs>
+        <g transform="translate(0.5,0.5)">
+        <rect x="191" y="1" width="60" height="60" fill="#ffffff" stroke="#000000" pointer-events="none">
+        </rect>
+        <rect x="191" y="131" width="60" height="60" fill="#ffffff" stroke="#000000" pointer-events="none">
+        </rect>
+        <rect x="161" y="261" width="120" height="60" fill="#ffffff" stroke="#000000" pointer-events="none">
+        </rect>
+        <rect x="181" y="11" width="80" height="40" fill="none" stroke="none" pointer-events="none">
+        </rect>
+        <g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="24px">
+        <text x="221" y="41">M3</text>
+        </g>
+        <rect x="181" y="141" width="80" height="40" fill="none" stroke="none" pointer-events="none">
+        </rect>
+        <g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="24px">
+        <text x="221" y="171">V2</text>
+        </g>
+        <rect x="181" y="271" width="80" height="40" fill="none" stroke="none" pointer-events="none">
+        </rect>
+        <g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="24px">
+        <text x="221" y="301">DOM</text>
+        </g>
+        <path d="M 201 67 L 201 131" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 201 62 L 205 69 L 201 67 L 198 69 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 201 197 L 201 261" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 201 192 L 205 199 L 201 197 L 198 199 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 241 255 L 241 191" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 241 260 L 238 253 L 241 255 L 245 253 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 241 125 L 241 61" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 241 130 L 238 123 L 241 125 L 245 123 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <rect x="101" y="1" width="60" height="60" fill="#ffffff" stroke="#000000" pointer-events="none">
+        </rect>
+        <rect x="91" y="11" width="80" height="40" fill="none" stroke="none" pointer-events="none">
+        </rect>
+        <g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="24px">
+        <text x="131" y="41">M2</text>
+        </g>
+        <rect x="281" y="1" width="60" height="60" fill="#ffffff" stroke="#000000" pointer-events="none">
+        </rect>
+        <rect x="271" y="11" width="80" height="40" fill="none" stroke="none" pointer-events="none">
+        </rect>
+        <g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="24px">
+        <text x="311" y="41">M4</text>
+        </g>
+        <rect x="371" y="1" width="60" height="60" fill="#ffffff" stroke="#000000" pointer-events="none">
+        </rect>
+        <rect x="361" y="11" width="80" height="40" fill="none" stroke="none" pointer-events="none">
+        </rect>
+        <g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="24px">
+        <text x="401" y="41">M5</text>
+        </g>
+        <rect x="11" y="1" width="60" height="60" fill="#ffffff" stroke="#000000" pointer-events="none">
+        </rect>
+        <rect x="1" y="11" width="80" height="40" fill="none" stroke="none" pointer-events="none">
+        </rect>
+        <g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="24px">
+        <text x="41" y="41">M1</text>
+        </g>
+        <rect x="101" y="131" width="60" height="60" fill="#ffffff" stroke="#000000" pointer-events="none">
+        </rect>
+        <rect x="91" y="141" width="80" height="40" fill="none" stroke="none" pointer-events="none">
+        </rect>
+        <g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="24px">
+        <text x="131" y="171">V1</text>
+        </g>
+        <rect x="281" y="131" width="60" height="60" fill="#ffffff" stroke="#000000" pointer-events="none">
+        </rect>
+        <rect x="271" y="141" width="80" height="40" fill="none" stroke="none" pointer-events="none">
+        </rect>
+        <g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="24px">
+        <text x="311" y="171">V3</text>
+        </g>
+        <path d="M 68 61 L 127 126" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 130 130 L 123 127 L 127 126 L 128 123 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 104 131 L 45 66" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 42 62 L 49 65 L 45 66 L 44 69 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 131 67 L 131 131" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 131 62 L 135 69 L 131 67 L 128 69 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 146 125 L 146 61" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 146 130 L 143 123 L 146 125 L 150 123 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 151 127 L 236 61" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 147 130 L 150 123 L 151 127 L 155 129 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 331 127 L 416 61" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 327 130 L 330 123 L 331 127 L 335 129 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 296 131 L 381 65" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 385 62 L 382 69 L 381 65 L 377 63 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 241 127 L 326 61" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 237 130 L 240 123 L 241 127 L 245 129 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 290 128 L 146 61" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 295 131 L 287 131 L 290 128 L 290 124 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 121 195 L 191 261" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 117 192 L 124 194 L 121 195 L 120 199 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 146 191 L 216 257" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 220 260 L 213 258 L 216 257 L 217 253 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 291 195 L 221 261" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 295 192 L 292 199 L 291 195 L 288 194 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 321 195 L 251 261" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 325 192 L 322 199 L 321 195 L 318 194 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        </g>
+        </svg>
+        </section>
+        <section data-id="b545e5046c8f0de906e19c6a2d28e4c0" class="">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="453px" height="333px" version="1.1">
+        <defs>
+        </defs>
+        <g transform="translate(0.5,0.5)">
+        <rect x="1" y="104" width="450" height="118" fill="#ffffff" stroke="#c4c4c4" stroke-dasharray="3 3" pointer-events="none">
+        </rect>
+        <rect x="161" y="1" width="140" height="60" fill="#ffffff" stroke="#000000" pointer-events="none">
+        </rect>
+        <rect x="201" y="131" width="60" height="60" fill="#ffffff" stroke="#000000" pointer-events="none">
+        </rect>
+        <rect x="161" y="271" width="140" height="60" fill="#ffffff" stroke="#000000" pointer-events="none">
+        </rect>
+        <rect x="191" y="11" width="80" height="40" fill="none" stroke="none" pointer-events="none">
+        </rect>
+        <g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="24px">
+        <text x="231" y="41">Data</text>
+        </g>
+        <rect x="191" y="141" width="80" height="40" fill="none" stroke="none" pointer-events="none">
+        </rect>
+        <g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="24px">
+        <text x="231" y="171">C3</text>
+        </g>
+        <rect x="191" y="281" width="80" height="40" fill="none" stroke="none" pointer-events="none">
+        </rect>
+        <g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="24px">
+        <text x="231" y="311">DOM</text>
+        </g>
+        <path d="M 231 61 L 231 125" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 231 130 L 228 123 L 231 125 L 235 123 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 231 191 L 231 265" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 231 270 L 228 263 L 231 265 L 235 263 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <rect x="281" y="131" width="60" height="60" fill="#ffffff" stroke="#000000" pointer-events="none">
+        </rect>
+        <rect x="271" y="141" width="80" height="40" fill="none" stroke="none" pointer-events="none">
+        </rect>
+        <g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="24px">
+        <text x="311" y="171">C4</text>
+        </g>
+        <rect x="121" y="131" width="60" height="60" fill="#ffffff" stroke="#000000" pointer-events="none">
+        </rect>
+        <rect x="111" y="141" width="80" height="40" fill="none" stroke="none" pointer-events="none">
+        </rect>
+        <g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="24px">
+        <text x="151" y="171">C2</text>
+        </g>
+        <rect x="361" y="131" width="60" height="60" fill="#ffffff" stroke="#000000" pointer-events="none">
+        </rect>
+        <rect x="351" y="141" width="80" height="40" fill="none" stroke="none" pointer-events="none">
+        </rect>
+        <g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="24px">
+        <text x="391" y="171">C5</text>
+        </g>
+        <rect x="41" y="131" width="60" height="60" fill="#ffffff" stroke="#000000" pointer-events="none">
+        </rect>
+        <rect x="31" y="141" width="80" height="40" fill="none" stroke="none" pointer-events="none">
+        </rect>
+        <g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="24px">
+        <text x="71" y="171">C1</text>
+        </g>
+        <path d="M 231 61 L 77 128" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 72 131 L 77 125 L 77 128 L 80 131 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 231 61 L 156 127" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 152 130 L 155 123 L 156 127 L 159 128 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 231 61 L 306 127" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 310 130 L 303 128 L 306 127 L 307 123 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 231 61 L 385 128" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 390 131 L 382 131 L 385 128 L 385 125 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 71 191 L 225 268" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 230 271 L 222 271 L 225 268 L 225 264 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 151 191 L 226 266" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 230 270 L 223 268 L 226 266 L 228 263 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 231 191 L 231 271" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 311 191 L 236 266" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 232 270 L 234 263 L 236 266 L 239 268 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 391 191 L 237 268" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <path d="M 232 271 L 237 264 L 237 268 L 240 271 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        </g>
+        </svg>
+        </section>
+        <section data-background-color="rgba( 22, 152, 213, 0.6 )" data-id="b02408cb63ffd598446e936bcedbc223" class="">
+        <h1>Components<br>
+        </h1>
+        </section>
+        <section data-background-color="rgba( 22, 152, 213, 0.6 )" data-id="22ebc0db90c6dbc1fac20f4b64a7ba89" class="">
+        <h2>Components</h2>
+        <p>
+        <br>
+        </p>
+        <p>
+        <font style="font-size: 54px;">Idempotent functions that describe your UI at any point in time</font>.<br>
+        </p>
+        </section>
+        <section data-id="73e6923b7d85cd045e0f59cca362dd6e" class="">
+        <font style="font-size: 54px;">component(data) = VDOM</font>
+        <br>
+        </section>
+        <section data-id="817b092ae309e09adbe958d8887888b5" class="">
+        <h4>component(data_1) = VDOM_1</h4>
+        <br>
+        <p>*user input changes data from data_1 to data_2*</p>
+        <br>
+        <h4>component(data_2) = VDOM_2</h4>
+        <h4>diffVDOMs(VDOM_1, VDOM_2) = diff</h4>
+        <h4>DOMOperations(diff) = operations</h4>
+        <h4>applyDOMOperations(operations, document.body)</h4>
+        </section>
+        <section data-id="91c6d53e557c26355c03b2fdd3096214" class="">
+        <h2>Best part? You don't even have to worry about this. Just build components.<br>
+        </h2>
+        </section>
+        <section data-id="a275cbe8f8b512a8fc0b804ed85700be" class="">
+        <h2>Every place data is displayed is guaranteed to be up-to-date. <br>
+        </h2>
+        <h2>
+        <br>
+        </h2>
+        <h2>No need for KVO or marking HTML templates with framework directives.<br>
+        </h2>
+        </section>
+        <section data-id="20eea248791c06ab1cdf60c1cd001301" class="">
+        <h2>Frees the programmer from doing manual, explicit DOM operations.<br>
+        </h2>
+        </section>
+        <section data-id="215b2c5febebce2ff6fee53d1d66e150" class="">
+        <h2>But what about the performance?</h2>
+        <h2>
+        <br>
+        </h2>
+        <h2>Isn't diffing VDOMs slow?</h2>
+        <p>
+        <br>
+        </p>
+        <h2>Why have VDOMs if the browser already has a DOM?<br>
+        </h2>
+        </section>
+        <section data-background-color="rgba( 200, 50, 30, 0.6 )" data-id="35d89cf6c35b8c0af6f99f3eb8056f05" class="">
+        <h1>The DOM is slow.<br>
+        </h1>
+        </section>
+        <section data-id="a36ce73b7106553813a551e787051d5d" class="">
+        <h2>The DOM is slow</h2>
+        <p>
+        <br>
+        </p>
+        <ul>
+        <li>Querying may require tree traversal</li>
+        <li>Mutations trigger viewport reflows, relayouts, repaints (CSS engine, etc.)</li>
+        <li>Can also invalidate caches, requiring the entire DOM to be reconstructed on the viewport<br>
+        </li>
+        </ul>
+        </section>
+        <section data-id="95c82e0c34a28bf7a656a703d6576d7e" class="">
+        <h2>Having in-memory representations of the DOM allows React to have extremely fast UIs.<br>
+        </h2>
+        </section>
+        <section data-id="70957b05e4fa5a6a79ad48726bcdef37" class="">
+        <h2>Virtual DOM (VDOM)</h2>
+        <p>
+        <br>
+        </p>
+        <ul>
+        <li>Allows for components to have a declarative API</li>
+        <li>Performs the minimum amount of actual DOM operations through computing diffs</li>
+        <li>Handles DOM operations for you</li>
+        </ul>
+        </section>
+        <section data-id="291ca650278b0dc2c44f36ead4e3712a" class="">
+        <h2>"Performance isn't the [main] goal of the VDOM, but if you're worried with performance, most workloads are as fast or faster [than the MVC alternatives] out of the box."</h2>
+        <p>Pete Hunt<br>
+        </p>
+        </section>
+        <section data-background-color="rgba( 22, 152, 213, 0.6 )" data-id="d389399c0e28ce37bfbad678ef5ac64a" class="">
+        <h1>Components<br>
+        </h1>
+        </section>
+        <section data-background-color="rgba( 22, 152, 213, 0.6 )" data-id="2f0548eee43e6859191606376452c477" class="">
+        <h2>Components allow you to express your program in the language of your problem domain.</h2>
+        <p>
+        <br>
+        </p>
+        <h2>Rather than on the language of a particular framework.<br>
+        </h2>
+        </section>
+        <section data-id="1055cdfa054406718dc7e48759b92390" class="">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="203px" height="403px" version="1.1"><defs/><g transform="translate(0.5,0.5)"><rect x="1" y="1" width="200" height="400" rx="25" ry="25" fill="#ffffff" stroke="#c0c0c0" pointer-events="none"/><rect x="14" y="61" width="175" height="280" fill="none" stroke="#c0c0c0" pointer-events="none"/><rect x="14" y="61" width="175" height="280" fill="none" stroke="#c0c0c0" pointer-events="none"/><ellipse cx="101" cy="20" rx="2.5" ry="2.5" fill="none" stroke="#c0c0c0" pointer-events="none"/><rect x="76" y="31" width="50" height="8" rx="4" ry="4" fill="none" stroke="#c0c0c0" pointer-events="none"/><ellipse cx="101" cy="371" rx="20" ry="20" fill="none" stroke="#c0c0c0" pointer-events="none"/><rect x="93" y="363" width="17" height="18" rx="3" ry="3" fill="none" stroke="#c0c0c0" pointer-events="none"/><rect x="31" y="106" width="60" height="60" fill="#ffffff" stroke="#000000" pointer-events="none"/><ellipse cx="61" cy="117" rx="6.25" ry="6.25" fill="#ffffff" stroke="#000000" pointer-events="none"/><path d="M 61 124 L 61 144 M 61 128 L 49 128 M 61 128 L 74 128 M 61 144 L 49 161 M 61 144 L 74 161" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none"/><rect x="101" y="101" width="80" height="40" fill="none" stroke="none" pointer-events="none"/><g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="12px"><text x="141" y="125">Bill O'Reilly</text></g><rect x="31" y="181" width="140" height="50" fill="#ffffff" stroke="#000000" pointer-events="none"/><g transform="translate(33,184)"><switch><foreignObject pointer-events="all" width="136" height="45" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.26; vertical-align: top; width: 136px; white-space: normal; text-align: center;">Tide comes in, tide goes out. You can't explain that!</div></foreignObject><text x="68" y="29" fill="#000000" text-anchor="middle" font-size="12px" font-family="Helvetica">[Not supported by viewer]</text></switch></g><rect x="61" y="61" width="80" height="40" fill="none" stroke="none" pointer-events="none"/><g fill="#000000" font-family="Helvetica" font-weight="bold" text-anchor="middle" font-size="14px"><text x="101" y="86">Top Tweets</text></g><rect x="31" y="231" width="140" height="30" fill="#ffffff" stroke="#000000" pointer-events="none"/><g transform="translate(33,239)"><switch><foreignObject pointer-events="all" width="136" height="15" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.26; vertical-align: top; width: 136px; white-space: normal; text-align: center;">Just had #breakfast.</div></foreignObject><text x="68" y="14" fill="#000000" text-anchor="middle" font-size="12px" font-family="Helvetica">[Not supported by viewer]</text></switch></g><rect x="31" y="261" width="140" height="30" fill="#ffffff" stroke="#000000" pointer-events="none"/><g transform="translate(33,261)"><switch><foreignObject pointer-events="all" width="136" height="30" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.26; vertical-align: top; width: 136px; white-space: normal; text-align: center;">@troll yes, definitely plan on that.</div></foreignObject><text x="68" y="21" fill="#000000" text-anchor="middle" font-size="12px" font-family="Helvetica">[Not supported by viewer]</text></switch></g><rect x="31" y="291" width="140" height="30" fill="#ffffff" stroke="#000000" pointer-events="none"/><g transform="translate(33,291)"><switch><foreignObject pointer-events="all" width="136" height="30" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.26; vertical-align: top; width: 136px; white-space: normal; text-align: center;">pic.twitter.com/asd23 #selfie #instagram</div></foreignObject><text x="68" y="21" fill="#000000" text-anchor="middle" font-size="12px" font-family="Helvetica">[Not supported by viewer]</text></switch></g><rect x="31" y="321" width="140" height="20" fill="#ffffff" stroke="#000000" pointer-events="none"/><g transform="translate(33,324)"><switch><foreignObject pointer-events="all" width="136" height="15" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.26; vertical-align: top; width: 136px; white-space: normal; text-align: center;">Good# morning.</div></foreignObject><text x="68" y="14" fill="#000000" text-anchor="middle" font-size="12px" font-family="Helvetica">[Not supported by viewer]</text></switch></g></g></svg>
+        </section>
+        <section data-id="d1b958c43d39993d467b855f0f700b5f" class="">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="353px" height="433px" version="1.1"><defs/><g transform="translate(0.5,0.5)"><rect x="231" y="1" width="120" height="320" fill="#ffffff" stroke="#000000" pointer-events="none"/><rect x="1" y="31" width="200" height="400" rx="25" ry="25" fill="#ffffff" stroke="#c0c0c0" pointer-events="none"/><rect x="14" y="91" width="175" height="280" fill="none" stroke="#c0c0c0" pointer-events="none"/><rect x="14" y="91" width="175" height="280" fill="none" stroke="#c0c0c0" pointer-events="none"/><ellipse cx="101" cy="50" rx="2.5" ry="2.5" fill="none" stroke="#c0c0c0" pointer-events="none"/><rect x="76" y="61" width="50" height="8" rx="4" ry="4" fill="none" stroke="#c0c0c0" pointer-events="none"/><ellipse cx="101" cy="401" rx="20" ry="20" fill="none" stroke="#c0c0c0" pointer-events="none"/><rect x="93" y="393" width="17" height="18" rx="3" ry="3" fill="none" stroke="#c0c0c0" pointer-events="none"/><rect x="21" y="131" width="160" height="70" rx="11" ry="11" fill="#ffffff" stroke="#786c74" stroke-dasharray="3 3" pointer-events="none"/><rect x="101" y="131" width="80" height="40" fill="none" stroke="none" pointer-events="none"/><g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="12px"><text x="141" y="155">Bill O'Reilly</text></g><rect x="31" y="136" width="60" height="60" fill="#ffffff" stroke="#000000" pointer-events="none"/><ellipse cx="61" cy="147" rx="6.25" ry="6.25" fill="#ffffff" stroke="#000000" pointer-events="none"/><path d="M 61 154 L 61 174 M 61 158 L 49 158 M 61 158 L 74 158 M 61 174 L 49 191 M 61 174 L 74 191" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none"/><rect x="21" y="96" width="160" height="30" rx="5" ry="5" fill="#ffffff" stroke="#786c74" stroke-dasharray="3 3" pointer-events="none"/><rect x="61" y="91" width="80" height="40" fill="none" stroke="none" pointer-events="none"/><g fill="#000000" font-family="Helvetica" font-weight="bold" text-anchor="middle" font-size="14px"><text x="101" y="116">Top Tweets</text></g><rect x="21" y="206" width="160" height="175" rx="24" ry="24" fill="#ffffff" stroke="#786c74" stroke-dasharray="3 3" pointer-events="none"/><rect x="31" y="211" width="140" height="50" fill="#ffffff" stroke="#000000" pointer-events="none"/><g transform="translate(33,214)"><switch><foreignObject pointer-events="all" width="136" height="45" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.26; vertical-align: top; width: 136px; white-space: normal; text-align: center;">Tide comes in, tide goes out. You can't explain that! #tides</div></foreignObject><text x="68" y="29" fill="#000000" text-anchor="middle" font-size="12px" font-family="Helvetica">[Not supported by viewer]</text></switch></g><rect x="31" y="261" width="140" height="30" fill="#ffffff" stroke="#000000" pointer-events="none"/><g transform="translate(33,269)"><switch><foreignObject pointer-events="all" width="136" height="15" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.26; vertical-align: top; width: 136px; white-space: normal; text-align: center;">Just had #breakfast.</div></foreignObject><text x="68" y="14" fill="#000000" text-anchor="middle" font-size="12px" font-family="Helvetica">[Not supported by viewer]</text></switch></g><rect x="31" y="291" width="140" height="30" fill="#ffffff" stroke="#000000" pointer-events="none"/><g transform="translate(33,291)"><switch><foreignObject pointer-events="all" width="136" height="30" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.26; vertical-align: top; width: 136px; white-space: normal; text-align: center;">@troll yes, definitely plan on that.</div></foreignObject><text x="68" y="21" fill="#000000" text-anchor="middle" font-size="12px" font-family="Helvetica">[Not supported by viewer]</text></switch></g><rect x="31" y="321" width="140" height="30" fill="#ffffff" stroke="#000000" pointer-events="none"/><g transform="translate(33,321)"><switch><foreignObject pointer-events="all" width="136" height="30" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.26; vertical-align: top; width: 136px; white-space: normal; text-align: center;">pic.twitter.com/asd23 #selfie #instagram</div></foreignObject><text x="68" y="21" fill="#000000" text-anchor="middle" font-size="12px" font-family="Helvetica">[Not supported by viewer]</text></switch></g><rect x="31" y="351" width="140" height="20" fill="#ffffff" stroke="#000000" pointer-events="none"/><g transform="translate(33,354)"><switch><foreignObject pointer-events="all" width="136" height="15" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.26; vertical-align: top; width: 136px; white-space: normal; text-align: center;">Good# morning.</div></foreignObject><text x="68" y="14" fill="#000000" text-anchor="middle" font-size="12px" font-family="Helvetica">[Not supported by viewer]</text></switch></g><rect x="241" y="86" width="100" height="45" fill="#ffffff" stroke="#000000" pointer-events="none"/><rect x="251" y="91" width="80" height="40" fill="none" stroke="none" pointer-events="none"/><g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="14px"><text x="291" y="116">Header</text></g><path d="M 181 111 L 249 111" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none"/><path d="M 243 115 L 250 111 L 243 108" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none"/><rect x="241" y="144" width="100" height="45" fill="#ffffff" stroke="#000000" pointer-events="none"/><rect x="241" y="266" width="100" height="45" fill="#ffffff" stroke="#000000" pointer-events="none"/><rect x="251" y="146" width="80" height="40" fill="none" stroke="none" pointer-events="none"/><g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="14px"><text x="291" y="171">Profile</text></g><path d="M 181 166 L 249 166" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none"/><path d="M 243 170 L 250 166 L 243 163" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none"/><rect x="251" y="271" width="80" height="40" fill="none" stroke="none" pointer-events="none"/><g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="14px"><text x="291" y="296">Tweets</text></g><path d="M 181 292 L 249 292" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none"/><path d="M 243 295 L 250 292 L 243 288" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="none"/><rect x="251" y="11" width="80" height="40" fill="none" stroke="none" pointer-events="none"/><g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="12px"><text x="291" y="35">Top Tweets</text></g></g></svg>
+        </section>
+        <section data-id="2d57b03ddf8663ad026d1fd661af98ac" class="">
+        <pre class="stretch"><code data-trim>
+var Profile = React.createClass({
+  render: function() {
+    return(React.DOM.div(null, [
+      React.DOM.img(null, this.props.user.image),
+      React.DOM.p(null, this.props.user.name)
+    ]);
+  }
+});
+
+var Tweets = React.createClass({
+  render: function() {
+    return(React.DOM.ul(null, this.props.tweets.map(function(tweet) {
+      return(React.DOM.li(null, tweet.text));
+    });
+  }
+});
+
+var TopTweets = React.createClass({
+  render: function() {
+    return(React.DOM.div(null, [
+      React.DOM.h1(null, 'Top Tweets'),
+      Profile({ user: this.props.user }),
+      Tweets({ tweets: this.props.user.tweets })
+    ]);
+  }
+});
+
+React.renderComponent(TopTweets({ user: user }), document.body);
+        </code></pre>
+        <br>
+        </section>
+        <section data-id="265a7f9d3839d07f4995ce5b877fb6b8" class="">
+        <pre class="stretch"><code data-trim>
+var Profile = React.createClass({
+  render: function() {
+    return(
+      &lt;div&gt;
+        &lt;img href={this.props.user.image} /&gt;
+        &lt;p&gt;{this.props.user.name}&lt;/p&gt;
+      &lt;/div&gt;
+    );
+  }
+});
+
+var Tweets = React.createClass({
+  render: function() {
+    return(
+      &lt;ul&gt;
+        {this.props.tweets.map(function(tweet) {
+          return(&lt;li&gt;tweet.text&lt;/li&gt;);
+        })};
+      &lt;/ul&gt;
+    );
+  }
+});
+
+var TopTweets = React.createClass({
+  render: function() {
+    return(
+      &lt;div&gt;
+        &lt;h1&gt;Top Tweets&lt;/h1&gt;
+        &lt;Profile user={this.props.user} /&gt;
+        &lt;Tweets tweets={this.props.user.tweets} /&gt;
+      &lt;/div&gt;
+    );
+  }
+});
+
+React.renderComponent(TopTweets({ user: user }), document.body);
+</code></pre>
+        <br>
+        </section>
+        <section data-id="1127009cee25585f1c40b98953c3a24c" class="">
+        <h4>TopTweets(data) = Header() + Profile(data_1) + Tweets(data_2)</h4>
+        </section>
+        <section data-id="ce2055cd0d8921d01c5714e7c895511c" class="">
+        <h2>Components are reusable and composable declarative representations of your UI.<br>
+        </h2>
+        </section>
+        <section data-background-color="rgba( 22, 152, 213, 0.6 )" data-id="4880ed3859df370285cc4855c3ea82d8" class="">
+        <h1>Collateral Benefits<br>
+        </h1>
+        </section>
+        <section data-id="71e2974f0c6a12d9f3a8a2fbbe274c41" class="">
+        <h2>Collateral Benefits</h2>
+        <p>
+        <br>
+        </p>
+        <ul>
+        <li>Render the application on the server (node.js, Java 8's Nashhorn, etc.)</li>
+        <li>UI testability for free</li>
+        <li>No templates!<br>
+        </li>
+        </ul>
+        </section>
+        <section data-background-color="rgba( 50, 200, 90, 0.4 )" data-id="8ddab5786f3eb5aa576041f26a4ce0c9" class="">
+        <h2>React.js takeaways</h2>
+        <ul>
+        <li>Declarative, fast UIs</li>
+        <li>Express your programs in the language of your problem domain<br>
+        </li>
+        </ul>
+        </section>
+        <section data-background-color="rgba( 22, 152, 213, 0.6 )" data-id="cd5d4434b6a4fe659a851c2a17701571" class="">
+        <h1>ClojureScript<br>
+        </h1>
+        </section>
+        <section data-background-color="rgba( 200, 50, 30, 0.6 )" data-id="b59ae1ffc1cab7012a52db25e78ad76f" class="">
+        <h1>
+        <a href="http://www.haskell.org/haskellwiki/The_JavaScript_Problem">Problem</a>
+        </h1>
+        <p>
+        <br>
+        </p>
+        <p>
+        <br>
+        </p>
+        <p data-fragment-index="0" class="fragment">
+        <font style="font-size: 42px;">JavaScript sucks</font>
+        </p>
+        <p data-fragment-index="0" class="fragment">
+        <br>
+        </p>
+        <p data-fragment-index="1" class="fragment">
+        <font style="font-size: 42px;">We need JavaScript</font>
+        </p>
+        </section>
+        <section data-id="9f6b51eb7023cc20308c4547b95acb81" class="">
+        <h2>JavaScript sucks</h2>
+        <p>
+        <br>
+        </p>
+        <ul>
+        <li>No integers</li>
+        <li>No module system</li>
+        <li>Verbose syntax</li>
+        <li>Confusing, inconsistent equality operators</li>
+        <li>Confusing, inconsistent automatic operator conversions</li>
+        <li>Lack of block scope</li>
+        <li>Non-uniform iterators</li>
+        <li>Global variables by default</li>
+        <li>NaN</li>
+        <li>this</li>
+        <li>No macros (yet...)</li>
+        <li>etc.<br>
+        </li>
+        </ul>
+        </section>
+        <section data-id="6d6876f23f8d402519f36582431a76ba" class="">
+        <h2>We Need JavaScript</h2>
+        <p>
+        <br>
+        </p>
+        <ul>
+        <li>Runtime is everywhere</li>
+        <li>Runtime is improving (Web Sockets, geo-location, FS API, RAF, push notifications, WebRTC, WebGL, SVG, Canvas, Web Workers, IndexedDB, etc.)<br>
+        </li>
+        </ul>
+        </section>
+        <section data-background-color="rgba( 22, 152, 213, 0.6 )" data-id="b6f47627d95b7d1b5badd1f504548c1b" class="">
+        <h2>Build better languages on top of JavaScript.<br>
+        </h2>
+        </section>
+        <section data-id="b347f31b80976d8c01a8437cad70d261" class="">
+        <h2>Compilers!</h2>
+        <p>
+        <br>
+        </p>
+        <ul>
+        <li>Lots of them already exist</li>
+        <li>Only a few bring significant improvements</li>
+        </ul>
+        <p>
+        <br>
+        </p>
+        <p>
+        <br>
+        </p>
+        <p>Popular ones</p>
+        <p>
+        <br>
+        </p>
+        <ul>
+        <li>CoffeeScript: mostly syntax sugar</li>
+        <li>TypeScript: typed superset of JavaScript. Brings type checking, compile time errors<br>
+        </li>
+        </ul>
+        </section>
+        <section data-background-color="rgba( 22, 152, 213, 0.6 )" data-id="e50bc1ac3728ef0fbd416cdef41b0c4a" class="">
+        <h1>ClojureScript<br>
+        </h1>
+        </section>
+        <section data-id="58cc508fa823a355c4be40b04c821325" class="">
+        <h2>ClojureScript is a Clojure compiler that targets JavaScript.<br>
+        </h2>
+        </section>
+        <section data-id="64bd5d7cc9b1e0094b9262b4a10a7ced" class="">
+        <h2>Why ClojureScript?</h2>
+        <h2>Why Clojure?</h2>
+        <h2>Why LISP?<br>
+        </h2>
+        </section>
+        <section data-id="63ec1a29cffd565e0c626a1745e02372" class="">
+        <h2>Clojure is just a better language.<br>
+        </h2>
+        </section>
+        <section data-id="d34dfe93a1a92e5c1ab0a05813338c02" class="">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="329px" height="369px" version="1.1">
+        <defs>
+        </defs>
+        <g transform="translate(0.5,0.5)">
+        <path d="M -43 163 L 280 163" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" transform="rotate(90,119,163)" pointer-events="none">
+        </path>
+        <path d="M 121 325 L 326 325" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none">
+        </path>
+        <rect x="151" y="322" width="40" height="3" fill="#c3ff00" stroke="#000000" pointer-events="none">
+        </rect>
+        <rect x="251" y="2" width="40" height="323" fill="#99ccff" stroke="#000000" pointer-events="none">
+        </rect>
+        <rect x="1" y="103" width="110" height="120" fill="none" stroke="none" pointer-events="none">
+        </rect>
+        <g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="12px">
+        <text x="56" y="153">Number of days</text>
+        <text x="56" y="167">spent designing</text>
+        <text x="56" y="181"> the language v1</text>
+        </g>
+        <rect x="131" y="327" width="80" height="40" fill="none" stroke="none" pointer-events="none">
+        </rect>
+        <g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="12px">
+        <text x="171" y="351">JavaScript</text>
+        </g>
+        <rect x="231" y="327" width="80" height="40" fill="none" stroke="none" pointer-events="none">
+        </rect>
+        <g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="12px">
+        <text x="271" y="351">Clojure</text>
+        </g>
+        </g>
+        </svg>
+        </section>
+        <section data-id="79a6f227914ddfa4e7d6bef4f140c139" class="">
+        <h2>ClojureScript</h2>
+        <p>
+        <br>
+        </p>
+        <ul>
+        <li>LISP</li>
+        <li>STM</li>
+        <li>Runtime polymorphism</li>
+        <li>The REPL</li>
+        <li>Functional programming</li>
+        <li>Immutable data structures</li>
+        <li>Uniform API over immutable data structures</li>
+        <li>Macros</li>
+        <li>Lazy sequences</li>
+        <li>Destructuring</li>
+        <li>State VS Identity</li>
+        <li>etc.<br>
+        </li>
+        </ul>
+        </section>
+        <section data-id="1077203264ffddba4094c92839c18395" class="">
+        <h2>core.async</h2>
+        <p>
+        <br>
+        </p>
+        <pre><code data-trim>
+(go (try
+  (let [tweets    (&lt;? (get-tweets-for "swannodette"))
+        first-url (&lt;? (expand-url (first (parse-urls tweets))))
+        response  (&lt;? (http-get first-url))]
+    (. js/console (log "Most recent link text:" response)))
+  (catch js/Error e
+    (. js/console (error "Error with the twitterverse:" e)))))
+        </code></pre>
+        <br>
+        <br>
+        <a href="http://swannodette.github.io/2013/08/31/asynchronous-error-handling/">Asynchronous Error Handling</a>
+        <br>
+        </section>
+        <section data-id="ae8019b4190b588b3ef425024a514002" class="">
+        <h2>The possibility of having access to the power of Clojure in the browser is immensely valuable.<br>
+        </h2>
+        </section>
+        <section data-id="ff64567be897f83bc88d9dc811612d53" class="">
+        <h2>Value</h2>
+        <p>
+        <br>
+        </p>
+        <p data-fragment-index="0" class="fragment">To programmers, who will be able to build better programs, with less bugs, faster.</p>
+        <p>
+        <br>
+        </p>
+        <p data-fragment-index="1" class="fragment">To the people and companies who will benefit from those programs.<br>
+        </p>
+        </section>
+        <section data-id="ec8edaf65010b4a01c11017c9c30c846" class="">
+        <h2>The developer experience has improved significantly.<br>
+        </h2>
+        </section>
+        <section data-id="f7d5ee2fbdff7434bbc6a862503570a4" class="">
+        <h2>Developer Experience</h2>
+        <p>
+        <br>
+        </p>
+        <ul>
+        <li>Source maps</li>
+        <li>Easily reproducible tutorials</li>
+        <li>Browser-connected in-editor REPLs</li>
+        <li>Fast compilation cycles</li>
+        <li>Compatible libraries<br>
+        </li>
+        </ul>
+        </section>
+        <section data-id="ac626eac3fed5dd5c4c3271da4cbf730" class="">
+        <h2>Recommend you to check it out</h2>
+        <p>(but you probably have, already)<br>
+        </p>
+        </section>
+        <section data-background-image="https://s3.amazonaws.com/media-p.slid.es/uploads/mpereira/images/378107/Icing-on-the-cake_12.jpg" data-id="005a9d27c774f6c037d27d4841f00178" class="">
+        <br>
+        </section>
+        <section data-id="7b0ccc1e80f69014c75984e8733cd6d0" class="">
+        <h1>Om<br>
+        </h1>
+        </section>
+        <section data-id="535f23b07ea1ed077fb0f9f1ed2b8c6f" class="">
+        <h2>ClojureScript interface to React.<br>
+        </h2>
+        </section>
+        <section data-id="09d1a5642354cade226bcee19e62a49a" class="">
+        <h2>"Because of immutable data Om can deliver even better performance than React out of the box."</h2>
+        <p>
+        <br>
+        </p>
+        <p>David Nolen<br>
+        </p>
+        </section>
+        <section data-id="ba0eccfc84611d17d53af422dae2bfda" class="">
+<blockquote class="twitter-tweet tw-align-center" lang="en"><p>30-40X faster than JS MVCs nothing to do with ClojureScript. Ditch stateful objects, ditch events. Be declarative. Immutability. That&#39;s it.</p>&mdash; David Nolen (@swannodette) <a href="https://twitter.com/swannodette/statuses/412124671132565504">December 15, 2013</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+        </section>
+        <section data-id="720f6a8479fd0e1f9816a515d6223620" class="">
+        <h1>???<br>
+        </h1>
+        </section>
+        <section data-id="a98aa234ff07776869259e6a7b86c9a8" class="">
+        <h2>ClojureScript</h2>
+        <ul>
+        <li>Compiled, slower than hand-written JavaScript</li>
+        <li>Uses immutable data structures, slower than JavaScript data structures</li>
+        </ul>
+        <br>
+        <p data-fragment-index="0" class="fragment">And yet</p>
+        <h2 data-fragment-index="1" class="fragment">Om's performance beats that of most JavaScript MVC frameworks<br>
+        </h2>
+        </section>
+        <section data-id="40865d8ed08094f1b8c3dcdbe2555772" class="">
+        <h2>"Ideas have fundamental performance properties."</h2>
+        <p>Pete Hunt<br>
+        </p>
+        </section>
+        <section data-id="1b965cb5ce142e90702916b734798469" class="">
+        <h2>Immutable data structures make React's diffing algorithm really smart.<br>
+        </h2>
+        </section>
+        <section data-id="fe108e5f9b8813127b35e44e049dd909" class="">
+        <h2>
+        <a href="https://github.com/swannodette/om/wiki/Conceptual-overview">And more...</a>
+        <br>
+        </h2>
+        </section>
+        <section data-background-color="rgba( 22, 213, 75, 0.6 )" data-id="f86a7db32cedfec1389e68f55c90df0c" class="">
+        <h1>Takeaways</h1>
+        </section>
+        <section data-background-color="rgba( 255, 122, 0, 0.6 )" data-id="264dd8c034ca5269ce0119a5e1be2c50" class="">
+        <h2>"Ideas have fundamental performance properties."</h2>
+        </section>
+        <section data-background-color="rgba( 22, 152, 213, 0.6 )" data-id="7560aa3f8435789b556d8bb252e13f50" class="">
+        <h2>"Don't trade simplicity for familiarity."</h2>
+        </section>
+        <section data-id="d89c676ff86eecd3eb655dc44d85b2bb" class="">
+        <h2>And <a href="http://signalvnoise.com/posts/3124-give-it-five-minutes">give it five minutes</a>.<br>
+        </h2>
+        </section>
+        <section data-id="e56d6bc5f8b397b01b6f51981f8cb16e" class="">
+        <h1>Thanks!</h1>
+        <p>
+        <a href="https://twitter.com/mpereira">@mpereira</a>
+        <br>
+        </p>
+        </section>
+        <section data-id="c7b2a97683c1e668ccc07592546cfb20" class="">
+        <h2>Learn React.js</h2>
+        <p>
+        <br>
+        </p>
+        <p>Why?</p>
+        <ul>
+        <li>
+        <a href="http://www.confreaks.com/videos/3221-mwjs-be-predictable-not-correct">Be Predictable, Not Correct</a>&nbsp;</li>
+        <li>
+        <a href="http://youtu.be/DgVS-zXgMTk">React: Rethinking Best Practices</a>
+        </li>
+        <li>
+        <a href="http://facebook.github.io/react/docs/why-react.html">Why React?</a>
+        </li>
+        </ul>
+        <p>
+        <br>
+        </p>
+        <p>How</p>
+        <ul>
+        <li>
+        <a href="http://facebook.github.io/react/docs/getting-started.html">Getting Started</a>
+        </li>
+        <li>
+        <a href="http://youtu.be/XxVg_s8xAms">Introduction to React.js</a>
+        </li>
+        <li>
+        <a href="http://facebook.github.io/react/docs/tutorial.html">Tutorial</a>
+        <br>
+        </li>
+        </ul>
+        </section>
+        <section data-id="4ec26456a067355b0d69ca579dfcb52d" class="">
+        <h2>Learn ClojureScript</h2>
+        <p>
+        <br>
+        </p>
+        <p>Why?</p>
+        <ul>
+        <li>
+        <a href="https://github.com/clojure/clojurescript/wiki/Rationale">ClojureScript Rationale</a>
+        </li>
+        <li>
+        <a href="http://swannodette.github.io/2013/12/17/the-future-of-javascript-mvcs/">The Future of JavaScript MVC Frameworks</a>
+        <br>
+        </li>
+        <li>
+        <a href="http://clojure.org/rationale">Clojure Rationale</a>
+        </li>
+        <li>
+        <a href="http://youtu.be/alMbUJneFn0">Why Clojure?</a>
+        </li>
+        <li>
+        <a href="http://www.paulgraham.com/avg.html">Beating the Averages</a>
+        </li>
+        </ul>
+        <p>
+        <br>
+        </p>
+        <p>How</p>
+        <ul>
+        <li>
+        <a href="http://swannodette.github.io/2013/11/07/clojurescript-101/">ClojureScript 101</a>
+        </li>
+        <li>
+        <a href="http://himera.herokuapp.com/index.html">Translations from JavaScript</a>
+        <br>
+        </li>
+        <li>
+        <a href="https://github.com/swannodette/lt-cljs-tutorial">Light Table ClojureScript Tutorial</a>
+        </li>
+        <li>
+        <a href="https://github.com/swannodette/om/wiki/Basic-Tutorial">Om Tutorial</a>
+        <br>
+        </li>
+        </ul>
+        </section>
+      </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.min.js"></script>
+
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Parallax scrolling
+        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+        // parallaxBackgroundSize: '2100px 900px',
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+        ]
+      });
+
+    </script>
+
+  </body>
+</html>
