@@ -1286,6 +1286,9 @@ React.renderComponent(TopTweets({ user: user }), document.body);
         ]
       });
 
+      Reveal.addEventListener('slidechanged', function(event) {
+        ga('send', 'pageview', '/#/' + event.indexh);
+      });
     </script>
 
     <script>
